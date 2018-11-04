@@ -1,6 +1,6 @@
 We should have a proper readme about the project ¯\\\_(ツ)\_\/¯
 
-**About `logInWindow.hs`**
+**About [logInWindow.hs](logInWindow.hs)**
 
 Uses gtk2hs library
 
