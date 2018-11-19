@@ -1,5 +1,10 @@
 We should have a proper readme about the project ¯\\\_(ツ)\_\/¯
 
+
+**About [connection.hs](connection.hs)**
+Run the command: `cabal install myqsl-haskell` to install de necesary libraries
+
+
 **About [logInWindow.hs](logInWindow.hs)**
 
 Uses gtk2hs library
