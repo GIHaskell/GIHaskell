@@ -17,10 +17,10 @@ Links:
 
 Tested only on Linux, compiled with [ghc](https://www.haskell.org/ghc/). But in theory should work on any platform as gtk is [multiplatform](https://www.gtk.org/features.php)
 
-Select.hs tiene dos funciones que devuelven IO():\n
---la función main, pide el nombre de la consulta por teclado\n
---la función consulta requiere que se le pase el nombre de la consulta como parametro\n
-El nombre de la consulta es un dato de tipo [Char]\n
+Select.hs tiene dos funciones que devuelven IO():
+--la función main, pide el nombre de la consulta por teclado
+--la función consulta requiere que se le pase el nombre de la consulta como parametro
+El nombre de la consulta es un dato de tipo [Char]
 Consultas:
 De tablas
 ['A'] = "SELECT * FROM tUsuario"
