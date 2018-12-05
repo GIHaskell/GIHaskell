@@ -21,7 +21,7 @@ main = do
   
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "cristian", ciPassword = "password_cristian", ciCharset = 33}
+                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
 
   (defs, is) <- query_ conn $ q t
   xs <- Streams.toList is
