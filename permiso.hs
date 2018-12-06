@@ -12,8 +12,8 @@ import Data.Char
 import qualified Insert
 
 servidorBD = "jfaldanam.ddns.net"
-usuarioBD = "cristian"
-passwordBD = "password_cristian"
+usuarioBD = "usuario"
+passwordBD = "password"
 databaseDB = "GIHaskell"
 puertoBD = 3306
 
