@@ -21,7 +21,7 @@ main = do
 
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
+                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
 
   (defs, is) <- query_ conn $ q t
   xs <- Streams.toList is
@@ -34,12 +34,13 @@ consulta str = do
 
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
+                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
 
   (defs, is) <- query_ conn $ q str
   xs <- Streams.toList is
   let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
   --print xs
+  --putStrLn rs
   return rs
 
 getString :: MySQLValue -> String

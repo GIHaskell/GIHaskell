@@ -13,11 +13,9 @@ main :: IO ()
 main=do
     putStrLn "Introduzca su nombre de usuario:"
     usr<-getLine
-    --putStrLn (usr++"\n")
 
     putStrLn "Introduzca su password"
     pass<-getLine
-    --putStrLn (pass++"\n")
     usuarios<-Select.consulta "A"
 
     limpiar
@@ -28,20 +26,14 @@ main=do
 
 
 
---while:: (a->Bool) -> (a->IO a) -> a->IO a
---while cond funcion x
---    | cond x = do
---       y <-funcion x
---        while cond funcion y
---    | otherwise = return x
-    --principal:: IO ()
+
 printPiezas:: [String]->Int->String
 printPiezas (x:xs) n
     |(not (null xs))&&(n/=1)="( ) "++x++"\n"++printPiezas xs (n-1)
     |(not (null xs))&&(n==1)="(*) "++x++"\n"++printPiezas xs (n-1)
     |(null xs)&&(n==1)="(*) "++x++"\n\n"
     |otherwise="( ) "++x++"\n\n"
-    --where contador=1;
+
 
 
 
@@ -73,8 +65,7 @@ actualizarVista x y=do
     putStrLn "Piezas del tipo seleccionado"
 
     putStrLn(printCabecera listaClases)
-    --putStrLn (head (marcadorFila [(datosTabla ["12","123","maza","Avotillo","4"])] y))
-    --printLista (marcadorFila (map datosTabla datosPrueba1) y)
+    
     if (head x)==1 then
       printLista (marcadorFila (map datosTabla datosPrueba1) (head (tail x)))
     else if (head x)==2 then
