@@ -18,15 +18,13 @@ main=do
     putStrLn "Introduzca su password"
     pass<-getLine
     --putStrLn (pass++"\n")
+    usuarios<-Select.consulta "A"
 
-    --No hacer prints y comparar con la base de datos
-
-
-
-    --if type==1 then print"
     limpiar
-    do actualizarVista [1, 0] ["nombre", "fabricante"]
-
+    if (checkUsuarios usr pass usuarios) then
+      do actualizarVista [1, 0] ["nombre", "fabricante"]
+    else
+      putStrLn "Log in erroneo"
 
 
 
@@ -141,10 +139,16 @@ logica x y val
         logica x y operacion
 
 limpiar:: IO()
-limpiar= do putStrLn "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+limpiar= do putStrLn "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 
 printLista::[String]->IO()
 printLista [] = do putStrLn ""
 printLista (x:xs) = do
     putStrLn x
     printLista xs
+
+checkUsuarios::String->String->[[String]]->Bool
+checkUsuarios user pass [] = False
+checkUsuarios user pass (x:xs)
+  |((head x)==user)&&((head (tail x))==pass) = True
+  |otherwise = checkUsuarios user pass xs

@@ -29,7 +29,7 @@ main = do
   --print xs
   print rs
 
-consulta :: [Char] -> IO ()
+consulta :: [Char] -> IO [[String]]
 consulta str = do
 
   conn <- connect
@@ -40,7 +40,7 @@ consulta str = do
   xs <- Streams.toList is
   let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
   --print xs
-  print rs
+  return rs
 
 getString :: MySQLValue -> String
 getString (MySQLText text) = T.unpack text
