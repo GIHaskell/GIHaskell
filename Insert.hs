@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module Insert where
 
 import Database.MySQL.Base
 import Database.MySQL.BinLog
@@ -64,7 +64,7 @@ permiso nombre pantalla acceso modificacion = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
   withTransaction conn $ executeMany conn "INSERT INTO tPermiso VALUES (\
           \?  ,\
           \?  ,\
@@ -78,14 +78,14 @@ permiso nombre pantalla acceso modificacion = do
   --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
   --xs <- Streams.toList is
   --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs  
+  --print rs
 
 piezas :: Int32 -> String -> String -> String -> IO()
 piezas id nombre fabricante idTipo = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
   withTransaction conn $ executeMany conn "INSERT INTO tPiezas VALUES (\
           \?  ,\
           \?  ,\
@@ -99,14 +99,14 @@ piezas id nombre fabricante idTipo = do
   --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
   --xs <- Streams.toList is
   --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs  
+  --print rs
 
 tipoPieza :: String -> String -> IO()
 tipoPieza idTipo nombre = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
   withTransaction conn $ executeMany conn "INSERT INTO tTipoPieza VALUES (\
           \?  ,\
           \?)"
@@ -116,7 +116,7 @@ tipoPieza idTipo nombre = do
   --(defs, is) <- query_ conn "SELECT * FROM tTipoPieza"
   --xs <- Streams.toList is
   --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs  
+  --print rs
 
 
 
@@ -125,10 +125,9 @@ getString (MySQLText text) = T.unpack text
 getString (MySQLInt8 value) = show (fromInt8ToInt value)
 getString (MySQLInt32 value) = show (fromInt32ToInt value)
 getString (MySQLNull) = ""
-  
+
 fromInt8ToInt :: Int8 -> Int
 fromInt8ToInt n = fromIntegral n
-  
+
 fromInt32ToInt :: Int32 -> Int
 fromInt32ToInt n = fromIntegral n
-  

@@ -1,3 +1,6 @@
+import qualified Select
+import qualified Insert
+
 printOperats= "i:insertar\tb:borrar\ta:actualizar\t\te:salir\ns1:Select Tipo\ts2:Select Pieza\tn:cambiar nombre\tf:cambiar fabricante"
 listaClases=["    nº","id","nombre","fabricante","id_tipo"]
 datosPrueba1=[["1","123","aaaa","Avotillo","4"], ["2","77","aaaaaa","Martilleante","4"],["3","64","aaaaaa","no u","4"],["4","234","aaaaaa","no","4"]]

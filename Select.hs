@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module Select where
 
 import Database.MySQL.Base
 import Database.MySQL.BinLog
@@ -18,23 +18,23 @@ import Data.Char
 main = do
   putStrLn "Introduzca el nombre de la consulta:"
   t <- getLine
-  
+
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
+                   ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
 
   (defs, is) <- query_ conn $ q t
   xs <- Streams.toList is
   let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
   --print xs
   print rs
-  
+
 consulta :: [Char] -> IO ()
 consulta str = do
-  
+
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
+                   ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
 
   (defs, is) <- query_ conn $ q str
   xs <- Streams.toList is
@@ -54,7 +54,7 @@ fromInt8ToInt n = fromIntegral n
 fromInt32ToInt :: Int32 -> Int
 fromInt32ToInt n = fromIntegral n
 
-q :: [Char] -> Query 
+q :: [Char] -> Query
 q ['A'] = "SELECT * FROM tUsuario"
 q ['B'] = "SELECT * FROM tRol"
 q ['C'] = "SELECT * FROM tPermiso"
@@ -76,8 +76,3 @@ q ['m'] = "SELECT FABRICANTE FROM tPiezas"
 q ['n'] = "SELECT ID_TIPO FROM tPiezas"
 q ['o'] = "SELECT ID_TIPO FROM tTipoPieza"
 q ['p'] = "SELECT NOMBRE FROM tTipoPieza"
-
-
-
-
-  
