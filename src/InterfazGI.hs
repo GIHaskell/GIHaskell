@@ -2,7 +2,7 @@ import qualified Usuario
 import qualified TipoPiezas
 import qualified Rol
 import qualified Piezas
---import qualified Permiso
+import qualified Permiso
 
 printOperats= "i:insertar\tb:borrar\ta:actualizar\t\te:salir\ns1:Select Tipo\ts2:Select Pieza\tn:cambiar nombre\tf:cambiar fabricante"
 listaClases=["    nº","id","nombre","fabricante","id_tipo"]
@@ -22,8 +22,9 @@ main=do
     usuarios<-Usuario.listaUsuario
 
     limpiar
-    if (checkUsuarios usr pass usuarios) then
-      do actualizarVista [1, 0] ["nombre", "fabricante"]
+    let rol = checkUsuarios usr pass usuarios
+    if (rol /= "") then
+      do actualizarVista [1, 0] ["nombre", "fabricante"] rol
     else
       putStrLn "Log in erroneo"
 
@@ -59,8 +60,8 @@ marcadorFila (x:xs) n
     |(null xs)&&(n==1)=["(*) "++x]
     |(null xs)&&(n/=1)=["( ) "++x]
 
-actualizarVista :: [Int]->[String]->IO ()--hay que ponerle 2 int
-actualizarVista x y=do
+actualizarVista :: [Int]->[String]->String->IO ()--hay que ponerle 2 int
+actualizarVista x y rol=do
 
     putStrLn "Piezas"
     putStrLn(printPiezas tiposPiezas (head x))
@@ -69,7 +70,9 @@ actualizarVista x y=do
 
     putStrLn(printCabecera listaClases)
 
-    if (head x)==1 then
+    if rol=="invitado" then
+      putStrLn "No tiene permiso para ver piezas"
+    else if (head x)==1 then
       printLista (marcadorFila (map datosTabla datosPrueba1) (head (tail x)))
     else if (head x)==2 then
       printLista (marcadorFila (map datosTabla datosPrueba2) (head (tail x)))
@@ -83,24 +86,36 @@ actualizarVista x y=do
 
     putStrLn "\nSeleccione una operacion: "
     operacion<-getLine
-    do logica x y operacion
+    do logica x y rol operacion
 
 
-logica::[Int]->[String]->String->IO()
-logica x y val
-    |val=="i" = do
-        limpiar
-        putStrLn "Insertando...\n\n"
-        actualizarVista [(head x), 0] y
-    |val=="b" = do
-        limpiar
-        putStrLn "Borrando seleccionado...\n\n"
-        actualizarVista [(head x), 0] y
-    |val=="a" = do
-        limpiar
-        putStrLn ("Actualizando valores de fila "++(show y)++"\n\n")
-        actualizarVista x y
-    |val=="e" = do
+logica::[Int]->[String]->String->String->IO()
+logica x y rol val
+    |val=="i" = if rol == "administrador" then do
+                  limpiar
+                  putStrLn "Insertando...\n\n"
+                  actualizarVista [(head x), 0] y rol
+                else do
+                  limpiar
+                  putStrLn "Necesita permisos de administrador para insertar...\n\n"
+                  actualizarVista x y rol
+    |val=="b" = if rol == "administrador" then do
+                  limpiar
+                  putStrLn "Borrando seleccionado...\n\n"
+                  actualizarVista [(head x), 0] y rol
+                else do
+                  limpiar
+                  putStrLn "Necesita permisos de administrador para borrar...\n\n"
+                  actualizarVista x y rol
+    |val=="a" = if rol == "administrador" then do
+                  limpiar
+                  putStrLn ("Actualizando valores de fila "++(show y)++"\n\n")
+                  actualizarVista x y rol
+                else do
+                  limpiar
+                  putStrLn "Necesita permisos de administrador para actualizar...\n\n"
+                  actualizarVista x y rol
+    |((val=="e") || (val=="q")) = do
         limpiar
         putStrLn "| |\n| |__  _   _  ___\n| '_ \\| | | |/ _ \\\n| |_) | |_| |  __/\n|_.__/ \\__, |\\___|\n        __/ |     \n       |___/     :D\n\n\n"
     |val=="s1" = do
@@ -108,29 +123,29 @@ logica x y val
         seleccion<-getLine
         limpiar
         putStrLn ("Seleccionada tipo de pieza "++seleccion++"\n\n")
-        actualizarVista [(read seleccion), 0] y
+        actualizarVista [(read seleccion), 0] y rol
     |val=="s2" = do
         putStrLn "\nInserte indice de pieza a seleccionar:"
         seleccion<-getLine
         limpiar
         putStrLn ("Seleccionada pieza "++seleccion++"\n\n")
-        actualizarVista [(head x),(read seleccion)] y
+        actualizarVista [(head x),(read seleccion)] y rol
     |val=="n" = do
         putStrLn "\nInserte el nuevo nombre:"
         nombre<-getLine
         limpiar
         putStrLn ("Actualizando nombre a: "++nombre++"\n\n")
-        actualizarVista x [nombre,(head (tail y))]
+        actualizarVista x [nombre,(head (tail y))] rol
     |val=="f" = do
         putStrLn "\nInserte el nuevo fabricante:"
         fabricante<-getLine
         limpiar
         putStrLn ("Actualizando fabricante a: "++fabricante++"\n\n")
-        actualizarVista x [(head y),fabricante]
+        actualizarVista x [(head y),fabricante] rol
     |otherwise = do
         putStrLn "\nComando desconocido, intentelo de nuevo:"
         operacion<-getLine
-        logica x y operacion
+        logica x y rol operacion
 
 limpiar:: IO()
 limpiar= do putStrLn "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
@@ -141,8 +156,8 @@ printLista (x:xs) = do
     putStrLn x
     printLista xs
 
-checkUsuarios::String->String->[[String]]->Bool
-checkUsuarios user pass [] = False
+checkUsuarios::String->String->[[String]]->String
+checkUsuarios user pass [] = ""
 checkUsuarios user pass (x:xs)
-  |((head x)==user)&&((head (tail x))==pass) = True
+  |((head x)==user)&&((head (tail x))==pass) = (head (tail (tail x)))
   |otherwise = checkUsuarios user pass xs
