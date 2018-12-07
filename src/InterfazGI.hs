@@ -89,15 +89,21 @@ actualizarVista x y rol=do
     putStrLn "\nSeleccione una operacion: "
     operacion<-getLine
 
+    --if (elemSeleccinado /= []) then
+    --    let idElemento = (getPosInt32 elemSeleccinado 1)
+    --else
+    --    let idElemento = 0
     let idElemento = (getPosInt32 elemSeleccinado 1)
+    let tipoElemento = (getPosString elemSeleccinado 4)
     --putStrLn (show idElemento)
-    do logica x y rol operacion idElemento
+    do logica x y rol operacion idElemento tipoElemento
 
 
-logica::[Int]->[String]->String->String->Int32->IO()
-logica x y rol val param
+logica::[Int]->[String]->String->String->Int32->String->IO()
+logica x y rol val idSeleccionado tipoSeleccionado
     |val=="i" = if rol == "administrador" then do
                   limpiar
+                  Piezas.piezas 1 (head y) (getPosString y 2) tipoSeleccionado
                   putStrLn "Insertando...\n\n"
                   actualizarVista [(head x), 0] ["",""] rol
                 else do
@@ -106,7 +112,7 @@ logica x y rol val param
                   actualizarVista x y rol
     |val=="b" = if rol == "administrador" then do
                   limpiar
-                  Piezas.delete param
+                  Piezas.delete idSeleccionado
                   putStrLn "Borrando seleccionado...\n\n"
                   actualizarVista [(head x), 0] ["",""] rol
                 else do
@@ -116,11 +122,11 @@ logica x y rol val param
     |val=="a" = if rol == "administrador" then do
                   limpiar
                   if ((head y)/="") then do
-                    Piezas.setNombre param (head y)
+                    Piezas.setNombre idSeleccionado (head y)
                   else do
                     return ()
                   if ((getPosString y 2)/="") then do
-                    Piezas.setFabricante param (getPosString y 2)
+                    Piezas.setFabricante idSeleccionado (getPosString y 2)
                   else do
                     return ()
                   putStrLn ("Actualizando valores de fila "++(show y)++"\n\n")
@@ -163,7 +169,7 @@ logica x y rol val param
     |otherwise = do
         putStrLn "\nComando desconocido, intentelo de nuevo:"
         operacion<-getLine
-        logica x y rol operacion param
+        logica x y rol operacion idSeleccionado tipoSeleccionado
 
 limpiar:: IO()
 limpiar= do putStrLn "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
@@ -218,7 +224,7 @@ getPosString (x:xs) n
   |(n/=1)= getPosString xs (n-1)
 
 getPosList::[[String]]->Int->[String]
-getPosList [] _ = [""]
+getPosList [] _ = []
 getPosList (x:xs) n
   |(n==1)=x
   |(n/=1)= getPosList xs (n-1)
