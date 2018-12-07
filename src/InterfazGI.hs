@@ -4,7 +4,8 @@ import qualified Rol
 import qualified Piezas
 import qualified Permiso
 
-printOperats= "i:insertar\tb:borrar\ta:actualizar\t\te:salir\ns1:Select Tipo\ts2:Select Pieza\tn:cambiar nombre\tf:cambiar fabricante"
+--printOperats= "i:insertar\tb:borrar\ta:actualizar\ne:salir\t\ts1:Select Tipo\ts2:Select Pieza\nn:cambiar nombre\tf:cambiar fabricante\tl:Limpiar"
+printOperats= "Operaciones:\ns1:Select Tipo\t s2:Select Pieza l:Limpiar\ni:insertar\t b:borrar\t a:actualizar\te:salir\nn:cambiar nombre f:cambiar fabricante"
 listaClases=["    nº","id","nombre","fabricante","id_tipo"]
 datosPrueba1=[["1","123","aaaa","Avotillo","4"], ["2","77","aaaaaa","Martilleante","4"],["3","64","aaaaaa","no u","4"],["4","234","aaaaaa","no","4"]]
 datosPrueba2=[["2","77","bbbbbb","Martilleante","4"],["1","123","bbbbbb","Avotillo","4"],["3","64","bbbbbbb","no u","4"],["4","234","bbbbbbb","no","4"]]
@@ -24,7 +25,7 @@ main=do
     limpiar
     let rol = checkUsuarios usr pass usuarios
     if (rol /= "") then
-      do actualizarVista [1, 0] ["nombre", "fabricante"] rol
+      do actualizarVista [0, 0] ["", ""] rol
     else
       putStrLn "Log in erroneo"
 
@@ -72,6 +73,8 @@ actualizarVista x y rol=do
 
     if rol=="invitado" then
       putStrLn "No tiene permiso para ver piezas"
+    else if (head x)==0 then
+      putStrLn "Seleccione un tipo de piezas para mostrar su contenido"
     else if (head x)==1 then
       printLista (marcadorFila (map datosTabla datosPrueba1) (head (tail x)))
     else if (head x)==2 then
@@ -142,6 +145,10 @@ logica x y rol val
         limpiar
         putStrLn ("Actualizando fabricante a: "++fabricante++"\n\n")
         actualizarVista x [(head y),fabricante] rol
+    |val=="l" = do
+        limpiar
+        putStrLn ("Limpiando opciones...\n\n")
+        actualizarVista [0,0] ["",""] rol
     |otherwise = do
         putStrLn "\nComando desconocido, intentelo de nuevo:"
         operacion<-getLine
