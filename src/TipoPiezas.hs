@@ -9,7 +9,6 @@ import qualified Data.Text as T
 import Data.Maybe
 import Data.Int (Int8, Int16, Int32, Int64)
 import Data.Char
-import qualified Insert
 
 servidorBD = "jfaldanam.ddns.net"
 usuarioBD = "usuario"
@@ -96,7 +95,7 @@ delete pk = do
   executeStmt conn delStmt [MySQLText (T.pack pk)]
   aux <- close conn
   print "Transaccion realizada"
-  
+
 
 
 getString :: MySQLValue -> String
