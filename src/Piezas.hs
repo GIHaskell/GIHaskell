@@ -25,19 +25,17 @@ type NombrePieza = String
 type FabricantePieza = String
 type IdTipoPieza = String
 
-piezas :: IdPieza -> NombrePieza -> FabricantePieza -> IdTipoPieza -> IO()
-piezas id nombre fabricante idTipo = do
+piezas :: NombrePieza -> FabricantePieza -> IdTipoPieza -> IO()
+piezas nombre fabricante idTipo = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                    ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
-  withTransaction conn $ executeMany conn "INSERT INTO tPiezas VALUES (\
-          \?  ,\
+  withTransaction conn $ executeMany conn "INSERT INTO tPiezas(NOMBRE,FABRICANTE,ID_TIPO) VALUES (\
           \?  ,\
           \?  ,\
           \?)"
-          [[MySQLInt32 id,
-           MySQLText $ T.pack nombre,
+          [[MySQLText $ T.pack nombre,
            MySQLText $ T.pack fabricante,
            MySQLText $ T.pack idTipo]]
   aux <- close conn
