@@ -1,5 +1,8 @@
-import qualified Select
-import qualified Insert
+import qualified Usuario
+import qualified TipoPiezas
+import qualified Rol
+import qualified Piezas
+--import qualified Permiso
 
 printOperats= "i:insertar\tb:borrar\ta:actualizar\t\te:salir\ns1:Select Tipo\ts2:Select Pieza\tn:cambiar nombre\tf:cambiar fabricante"
 listaClases=["    nº","id","nombre","fabricante","id_tipo"]
@@ -16,7 +19,7 @@ main=do
 
     putStrLn "Introduzca su password"
     pass<-getLine
-    usuarios<-Select.consulta "A"
+    usuarios<-Usuario.listaUsuario
 
     limpiar
     if (checkUsuarios usr pass usuarios) then
@@ -65,7 +68,7 @@ actualizarVista x y=do
     putStrLn "Piezas del tipo seleccionado"
 
     putStrLn(printCabecera listaClases)
-    
+
     if (head x)==1 then
       printLista (marcadorFila (map datosTabla datosPrueba1) (head (tail x)))
     else if (head x)==2 then
