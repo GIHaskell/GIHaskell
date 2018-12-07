@@ -94,16 +94,15 @@ actualizarVista x y rol=do
     --else
     --    let idElemento = 0
     let idElemento = (getPosInt32 elemSeleccinado 1)
-    let tipoElemento = (getPosString elemSeleccinado 4)
     --putStrLn (show idElemento)
-    do logica x y rol operacion idElemento tipoElemento
+    do logica x y rol operacion idElemento codigoPieza
 
 
 logica::[Int]->[String]->String->String->Int32->String->IO()
 logica x y rol val idSeleccionado tipoSeleccionado
     |val=="i" = if rol == "administrador" then do
                   limpiar
-                  Piezas.piezas 1 (head y) (getPosString y 2) tipoSeleccionado
+                  Piezas.piezas (head y) (getPosString y 2) tipoSeleccionado
                   putStrLn "Insertando...\n\n"
                   actualizarVista [(head x), 0] ["",""] rol
                 else do
