@@ -105,9 +105,9 @@ setTipoPieza pk idTipo = do
                       ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
   updStmt <- prepareStmt conn "UPDATE tPiezas SET ID_TIPO = ? WHERE ID = ? "
-  aux <- close conn
+  
   executeStmt conn updStmt [MySQLText (T.pack idTipo),MySQLInt32 pk]
-
+  aux <- close conn
   print "Transaccion realizada"
 
 
