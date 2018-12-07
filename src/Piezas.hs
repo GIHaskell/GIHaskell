@@ -41,11 +41,9 @@ piezas id nombre fabricante idTipo = do
            MySQLText $ T.pack nombre,
            MySQLText $ T.pack fabricante,
            MySQLText $ T.pack idTipo]]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 listaPiezas :: IO [[String]]
@@ -53,12 +51,12 @@ listaPiezas = do
     conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
     (defs, is) <- query_ conn "SELECT * FROM tPiezas"
+    aux <- close conn
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-    --print xs
-    --putStrLn rs
+
     return rs
 
 setIdPieza :: IdPiezaOriginal -> IdPieza -> IO()
@@ -68,14 +66,11 @@ setIdPieza pk id = do
                    ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
   updStmt <- prepareStmt conn "UPDATE tPiezas SET ID = ? WHERE ID = ? "
-  
-  executeStmt conn updStmt [MySQLInt32 id,MySQLInt32 pk]
 
+  executeStmt conn updStmt [MySQLInt32 id,MySQLInt32 pk]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 setNombre :: IdPiezaOriginal -> NombrePieza -> IO()
@@ -85,74 +80,61 @@ setNombre pk nombre = do
                    ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
   updStmt <- prepareStmt conn "UPDATE tPiezas SET NOMBRE = ? WHERE ID = ? "
-  
-  executeStmt conn updStmt [MySQLText (T.pack nombre),MySQLInt32 pk]
 
+  executeStmt conn updStmt [MySQLText (T.pack nombre),MySQLInt32 pk]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setFabricante :: IdPiezaOriginal -> FabricantePieza -> IO()
 setFabricante pk fabricante = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                      ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
   updStmt <- prepareStmt conn "UPDATE tPiezas SET FABRICANTE = ? WHERE ID = ? "
-    
+
   executeStmt conn updStmt [MySQLText (T.pack fabricante),MySQLInt32 pk]
-  
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setTipoPieza :: IdPiezaOriginal -> IdTipoPieza -> IO()
 setTipoPieza pk idTipo = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                       ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-    
+
   updStmt <- prepareStmt conn "UPDATE tPiezas SET ID_TIPO = ? WHERE ID = ? "
-      
+  aux <- close conn
   executeStmt conn updStmt [MySQLText (T.pack idTipo),MySQLInt32 pk]
-    
+
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 delete :: IdPiezaOriginal -> IO()
-delete pk = do 
+delete pk = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                       ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-    
+
   delStmt <- prepareStmt conn "DELETE FROM tPiezas WHERE ID = ? "
-      
+
   executeStmt conn delStmt [MySQLInt32 pk]
-    
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPiezas"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
-    
-      
+  
+
+
 
 getString :: MySQLValue -> String
 getString (MySQLText text) = T.unpack text
 getString (MySQLInt8 value) = show (fromInt8ToInt value)
 getString (MySQLInt32 value) = show (fromInt32ToInt value)
 getString (MySQLNull) = ""
-  
+
 fromInt8ToInt :: Int8 -> Int
 fromInt8ToInt n = fromIntegral n
-  
+
 fromInt32ToInt :: Int32 -> Int
 fromInt32ToInt n = fromIntegral n
-  

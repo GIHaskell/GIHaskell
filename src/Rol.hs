@@ -38,11 +38,9 @@ rol rolName rolDes admin = do
           [[MySQLText $ T.pack rolName,
            MySQLText $ T.pack rolDes,
            MySQLInt8  admin]]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tRol"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 listaRoles :: IO [[String]]
@@ -52,10 +50,9 @@ listaRoles = do
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
     (defs, is) <- query_ conn "SELECT * FROM tRol"
+    aux <- close conn
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-    --print xs
-    --putStrLn rs
     return rs
 
 setRolName :: NombreRolOriginal -> NombreRol -> IO()
@@ -67,12 +64,9 @@ setRolName pk rolName = do
   updStmt <- prepareStmt conn "UPDATE tRol SET rolName = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLText (T.pack rolName),MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tRol"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setRolDes :: NombreRolOriginal -> DescripcionRol -> IO()
 setRolDes pk rolDes = do
@@ -83,12 +77,9 @@ setRolDes pk rolDes = do
   updStmt <- prepareStmt conn "UPDATE tRol SET rolDes = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLText (T.pack rolDes),MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tRol"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 
@@ -101,13 +92,9 @@ delete pk = do
   delStmt <- prepareStmt conn "DELETE FROM tRol WHERE rolName = ? "
 
   executeStmt conn delStmt [MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tRol"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
-
+  
 
 
 getString :: MySQLValue -> String

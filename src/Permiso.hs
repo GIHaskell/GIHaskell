@@ -41,11 +41,9 @@ permiso rolName pantalla acceso modificacion = do
           MySQLText $ T.pack pantalla,
           MySQLInt8  acceso,
           MySQLInt8  modificacion]]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 listaPermisos :: IO [[String]]
@@ -55,10 +53,10 @@ listaPermisos = do
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
     (defs, is) <- query_ conn "SELECT * FROM tPermiso"
+    aux <- close conn
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-    --print xs
-    --putStrLn rs
+
     return rs
 
 setRolName :: NombreRolOriginal -> NombreRol -> IO()
@@ -70,12 +68,9 @@ setRolName pk rolName = do
   updStmt <- prepareStmt conn "UPDATE tPermiso SET rolName = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLText (T.pack rolName),MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setPantalla :: NombreRolOriginal -> PantallaPermiso -> IO()
 setPantalla pk pantalla = do
@@ -86,12 +81,9 @@ setPantalla pk pantalla = do
   updStmt <- prepareStmt conn "UPDATE tPermiso SET pantalla = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLText (T.pack pantalla),MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 setAcceso :: NombreRolOriginal -> AccesoPermiso -> IO()
@@ -103,12 +95,9 @@ setAcceso pk acceso = do
   updStmt <- prepareStmt conn "UPDATE tPermiso SET acceso = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLInt8 acceso,MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-   --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-   --xs <- Streams.toList is
-   --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-   --print rs
+
 
 setModificacion :: NombreRolOriginal -> ModificacionPermiso -> IO()
 setModificacion pk modificacion = do
@@ -119,12 +108,9 @@ setModificacion pk modificacion = do
   updStmt <- prepareStmt conn "UPDATE tPermiso SET modificacion = ? WHERE rolName = ? "
 
   executeStmt conn updStmt [MySQLInt8 modificacion,MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-   --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-   --xs <- Streams.toList is
-   --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-   --print rs
+   -
 
 delete :: NombreRolOriginal -> IO()
 delete pk = do
@@ -135,12 +121,9 @@ delete pk = do
   delStmt <- prepareStmt conn "DELETE FROM tPermiso WHERE rolName = ? "
 
   executeStmt conn delStmt [MySQLText (T.pack pk)]
-
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tPermiso"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+  
 
 
 

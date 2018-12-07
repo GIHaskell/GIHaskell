@@ -38,11 +38,9 @@ usuario nombre password rolName = do
           [[MySQLText $ T.pack nombre,
            MySQLText $ T.pack password,
            MySQLText $ T.pack rolName]]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tUsuario"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 
 listaUsuario :: IO [[String]]
@@ -50,12 +48,12 @@ listaUsuario = do
     conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
     (defs, is) <- query_ conn "SELECT * FROM tUsuario"
+    aux <- close conn
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-    --print xs
-    --putStrLn rs
+
     return rs
 
 setNombre :: NombreUsuarioOriginal -> NombreUsuario -> IO()
@@ -65,74 +63,61 @@ setNombre pk nombre = do
                    ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
   updStmt <- prepareStmt conn "UPDATE tUsuario SET nombre = ? WHERE nombre = ? "
-  
-  executeStmt conn updStmt [MySQLText (T.pack nombre),MySQLText (T.pack pk)]
 
+  executeStmt conn updStmt [MySQLText (T.pack nombre),MySQLText (T.pack pk)]
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tUsuario"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setPassword :: NombreUsuarioOriginal -> PasswordUsuario -> IO()
 setPassword pk password = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                      ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-  
+
   updStmt <- prepareStmt conn "UPDATE tUsuario SET password = ? WHERE nombre = ? "
-    
+
   executeStmt conn updStmt [MySQLText (T.pack password),MySQLText (T.pack pk)]
-  
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tUsuario"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 setRolName :: NombreUsuarioOriginal -> RolNameUsuario -> IO()
 setRolName pk rolName = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                       ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-    
+
   updStmt <- prepareStmt conn "UPDATE tUsuario SET rolName = ? WHERE nombre = ? "
-      
+
   executeStmt conn updStmt [MySQLText (T.pack rolName),MySQLText (T.pack pk)]
-    
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tUsuario"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
+
 
 delete :: NombreUsuarioOriginal -> IO()
-delete pk = do 
+delete pk = do
   conn <- connect
       ConnectInfo {ciHost = servidorBD, ciPort = puertoBD, ciDatabase = databaseDB,
                       ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
-    
+
   delStmt <- prepareStmt conn "DELETE FROM tUsuario WHERE nombre = ? "
-      
+
   executeStmt conn delStmt [MySQLText (T.pack pk)]
-    
+  aux <- close conn
   print "Transaccion realizada"
-  --(defs, is) <- query_ conn "SELECT * FROM tUsuario"
-  --xs <- Streams.toList is
-  --let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-  --print rs
-    
-      
+  
+
+
 
 getString :: MySQLValue -> String
 getString (MySQLText text) = T.unpack text
 getString (MySQLInt8 value) = show (fromInt8ToInt value)
 getString (MySQLInt32 value) = show (fromInt32ToInt value)
 getString (MySQLNull) = ""
-  
+
 fromInt8ToInt :: Int8 -> Int
 fromInt8ToInt n = fromIntegral n
-  
+
 fromInt32ToInt :: Int32 -> Int
 fromInt32ToInt n = fromIntegral n
-  
