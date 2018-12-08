@@ -33,22 +33,22 @@ main=do
 
 
 
-printPiezas:: [String]->Int->String
-printPiezas [] n = ""
-printPiezas (x:xs) n
-    |(n/=1)="( ) "++x++"\n"++printPiezas xs (n-1)
-    |(n==1)="(*) "++x++"\n"++printPiezas xs (n-1)
+printPiezas:: [String]->Int->Int->String
+printPiezas [] n m= ""
+printPiezas (x:xs) n m
+    |(n/=1)="( ) "++(show m)++". "++x++"\n"++printPiezas xs (n-1) (m+1)
+    |(n==1)="(*) "++(show m)++". "++x++"\n"++printPiezas xs (n-1) (m+1)
 
 
 listToString::[String]->String--print calses normal
 listToString [] = ""
-listToString (x:xs)=x++"\t"++listToString xs
+listToString (x:xs)=x++"\t|| "++listToString xs
 
-marcadorFila::[String]->Int->[String]--Le pasas todos los datos y marca el seleccionado
-marcadorFila [] n = [""]
-marcadorFila (x:xs) n
-    |(n==1)=["(*) "++x]++(marcadorFila xs (n-1))
-    |(n/=1)=["( ) "++x]++(marcadorFila xs (n-1))
+marcadorFila::[String]->Int->Int->[String]--Le pasas todos los datos y marca el seleccionado
+marcadorFila [] n m= [""]
+marcadorFila (x:xs) n m
+    |(n==1)=["(*) "++(show m)++".\t||"++x]++(marcadorFila xs (n-1) (m+1))
+    |(n/=1)=["( ) "++(show m)++".\t||"++x]++(marcadorFila xs (n-1) (m+1))
 
 
 actualizarVista :: [Int]->[String]->String->IO ()--hay que ponerle 2 int
@@ -56,7 +56,7 @@ actualizarVista x y rol=do
 
     putStrLn "Piezas"
     piezas <- nombresTiposPiezas
-    putStrLn(printPiezas piezas (head x))
+    putStrLn(printPiezas piezas (head x) 1)
     putStrLn "Piezas del tipo seleccionado"
 
     putStrLn(listToString listaClases)
@@ -71,7 +71,7 @@ actualizarVista x y rol=do
     else if (head x)==0 then
       putStrLn "Seleccione un tipo de piezas para mostrar su contenido"
     else
-      printLista (marcadorFila (map listToString datosQuery) (getPosInt x 2))
+      printLista (marcadorFila (map listToString datosQuery) (getPosInt x 2) 1)
 
     let elemSeleccinado = getPosList datosQuery (getPosInt x 2)
 
@@ -197,6 +197,8 @@ codigosTiposPiezas x = do
   let tiposString = (map head tipos)
   if x > (length tiposString) then
     return "Error"
+  else if x<0 then
+    return "error"
   else
     return (aux x tiposString)
       where
@@ -207,23 +209,27 @@ codigosTiposPiezas x = do
 getPosInt::[Int]->Int->Int
 getPosInt [] _ = 0
 getPosInt (x:xs) n
+  |(n<0)=0
   |(n==1)=x
   |(n/=1)= getPosInt xs (n-1)
 
 getPosInt32::[String]->Int32->Int32
 getPosInt32 [] _ = 0
 getPosInt32 (x:xs) n
+  |(n<0)=0
   |(n==1)=(read x)
   |(n/=1)= getPosInt32 xs (n-1)
 
 getPosString::[String]->Int->String
 getPosString [] _ = ""
 getPosString (x:xs) n
+  |(n<0)= ""
   |(n==1)=x
   |(n/=1)= getPosString xs (n-1)
 
 getPosList::[[String]]->Int->[String]
 getPosList [] _ = []
 getPosList (x:xs) n
+  |(n<0)=[]
   |(n==1)=x
   |(n/=1)= getPosList xs (n-1)
