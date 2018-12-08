@@ -17,7 +17,7 @@ main = do
   r <- getLine
   conn <- connect
       ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                   ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
+                   ciUser = "usuario", ciPassword = "password", ciCharset = 33}
 
   withTransaction conn $ executeMany conn "INSERT INTO tUsuario VALUES (\
           \?  ,\

@@ -10,15 +10,14 @@ import Data.Maybe
 main = do
     conn <- connect
         ConnectInfo {ciHost = "jfaldanam.ddns.net", ciPort = 3306, ciDatabase = "GIHaskell",
-                     ciUser = "martin", ciPassword = "password_martin", ciCharset = 33}
+                     ciUser = "usuario", ciPassword = "password", ciCharset = 33}
     (defs, is) <- query_ conn "SELECT * FROM tUsuario"
-    
+
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-    print rs      
-        
-        
--- funciones auxiliarles        
+    print rs
+
+
+-- funciones auxiliarles
 getString :: MySQLValue -> String
 getString (MySQLText text) = T.unpack text
-        
