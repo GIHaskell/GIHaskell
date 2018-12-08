@@ -140,24 +140,48 @@ logica x y rol val idSeleccionado tipoSeleccionado
     |val=="s1" = do
         putStrLn "\nInserte indice de tipo de pieza a seleccionar:"
         seleccion<-getLine
+        if seleccion=="" then do
+          putStrLn "Valor no valido, volver a seleccionar operacion"
+          operacion<-getLine
+          logica x y rol operacion idSeleccionado tipoSeleccionado
+        else
+          return ()
         limpiar
         putStrLn ("Seleccionada tipo de pieza "++seleccion++"\n\n")
         actualizarVista [(read seleccion), 0] ["",""] rol
     |val=="s2" = do
         putStrLn "\nInserte indice de pieza a seleccionar:"
         seleccion<-getLine
+        if seleccion=="" then do
+          putStrLn "Valor no valido, volver a seleccionar operacion"
+          operacion<-getLine
+          logica x y rol operacion idSeleccionado tipoSeleccionado
+        else
+          return ()
         limpiar
         putStrLn ("Seleccionada pieza "++seleccion++"\n\n")
         actualizarVista [(head x),(read seleccion)] ["",""] rol
     |val=="n" = do
         putStrLn "\nInserte el nuevo nombre:"
         nombre<-getLine
+        if nombre=="" then do
+          putStrLn "Valor no valido, volver a seleccionar operacion"
+          operacion<-getLine
+          logica x y rol operacion idSeleccionado tipoSeleccionado
+        else
+          return ()
         limpiar
         putStrLn ("Actualizando nombre a: "++nombre++"\n\n")
         actualizarVista x [nombre, (getPosString y 2)] rol
     |val=="f" = do
         putStrLn "\nInserte el nuevo fabricante:"
         fabricante<-getLine
+        if fabricante=="" then do
+          putStrLn "Valor no valido, volver a seleccionar operacion"
+          operacion<-getLine
+          logica x y rol operacion idSeleccionado tipoSeleccionado
+        else
+          return ()
         limpiar
         putStrLn ("Actualizando fabricante a: "++fabricante++"\n\n")
         actualizarVista x [(getPosString y 1), fabricante] rol
