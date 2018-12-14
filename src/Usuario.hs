@@ -49,10 +49,10 @@ listaUsuario = do
                     ciUser = usuarioBD, ciPassword = passwordBD, ciCharset = 33}
 
     (defs, is) <- query_ conn "SELECT * FROM tUsuario"
-    aux <- close conn
+    
     xs <- Streams.toList is
     let rs = [ [getString x | x <- y ] | y <- xs] -- unpack convierte Text a String
-
+    aux <- close conn
     return rs
 
 setNombre :: NombreUsuarioOriginal -> NombreUsuario -> IO()
